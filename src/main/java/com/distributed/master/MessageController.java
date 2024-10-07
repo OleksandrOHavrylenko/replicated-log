@@ -7,24 +7,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @RestController
 public class MessageController {
+    private final AtomicLong counter = new AtomicLong();
+
 
     private final List<Message> messageRepository = new ArrayList<>();
 
-    @GetMapping
-    List<Message> getMessages() {
+    @GetMapping("/list")
+    List<String> getMessages() {
         System.out.println("GET Messages");
-        return messageRepository;
+        return messageRepository.stream()
+                .map(Message::getMessage)
+                .collect(Collectors.toList());
+//        return messageRepository;
     }
 
-    @PostMapping
-    Message addMessage(@RequestBody Message message) {
-        System.out.println("POST Message: " + message);
+    @PostMapping("/append")
+    String  addMessage(@RequestBody Message message) throws InterruptedException {
+        message.setId(counter.getAndIncrement());
+        System.out.println("POST Message: " + message.getMessage());
         messageRepository.add(message);
-        return message;
+        return "OK " + message.getMessage();
     }
-
-
 }
