@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 @RestController
 public class SecMessageController {
-    private final AtomicLong counter = new AtomicLong();
-
 
     private final List<Message> messageRepository = new ArrayList<>();
 
