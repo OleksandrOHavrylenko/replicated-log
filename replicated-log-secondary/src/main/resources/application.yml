@@ -1,11 +1,15 @@
+spring:
+  application:
+    name: secondarynode
+server:
+  port: ${PORT:8081}
 grpc:
-  client:
-    sec1:
-      address: ${SEC_HOST:secondary1}:9090
-      negotiation-type: plaintext
+  server:
+    port: 9090
 logging:
   pattern:
     console: "[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
   level:
     com.distributed.master: info
   include-application-name: false
+

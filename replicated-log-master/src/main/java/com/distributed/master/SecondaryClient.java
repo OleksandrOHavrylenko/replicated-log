@@ -14,7 +14,7 @@ public class SecondaryClient {
 
     private static final Logger log = LoggerFactory.getLogger(SecondaryClient.class);
 
-    @GrpcClient("sec")
+    @GrpcClient("sec1")
     LogAppendServiceGrpc.LogAppendServiceStub stub;
 
     public void appendLog(Message message) {

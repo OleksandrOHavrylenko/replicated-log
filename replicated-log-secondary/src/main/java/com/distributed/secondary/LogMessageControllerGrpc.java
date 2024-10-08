@@ -14,7 +14,7 @@ public class LogMessageControllerGrpc extends LogAppendServiceGrpc.LogAppendServ
     private static final Logger log = LoggerFactory.getLogger(LogMessageControllerGrpc.class);
 
     private LogResponse append(LogMessage logMessage) {
-        log.info("Received request: {}", logMessage);
+        log.info("Received request: {}-{}", logMessage.getId(), logMessage.getMessage());
         System.out.println("Received request: " + logMessage);
 
         return LogResponse
