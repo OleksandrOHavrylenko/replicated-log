@@ -19,11 +19,11 @@ public class MessageController {
     private final AtomicLong counter = new AtomicLong();
 
     private final LogRepository logRepository;
-    private final SecondaryClient secondaryClient;
+    private final SecClient secClient1;
 
-    public MessageController(final SecondaryClient secondaryClient, LogRepository logRepository) {
-        this.secondaryClient = secondaryClient;
+    public MessageController(LogRepository logRepository) {
         this.logRepository = logRepository;
+        secClient1 = new SecClient("secondary1", 9090);
     }
 
     @GetMapping("/list")
@@ -39,7 +39,7 @@ public class MessageController {
     String append(@RequestBody Message message) {
         message.setId(counter.getAndIncrement());
         logRepository.add(message);
-        secondaryClient.appendLog(message);
+        secClient1.replicateLog(message);
         log.info("Message replicated to secondaries.");
         return "OK " + message.getMessage();
     }

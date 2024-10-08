@@ -11,9 +11,9 @@ public class Message {
 	
 	private String message;
 
-	public Message(final LogMessage logMessage) {
-		this.id = logMessage.getId();
-		this.message = logMessage.getMessage();
+	public Message(final Long id, final String message) {
+		this.id = id;
+		this.message = message;
 	}
 
 	@Override

@@ -21,21 +21,18 @@ public class LogMessageControllerGrpc extends LogAppendServiceGrpc.LogAppendServ
         this.logRepository = Objects.requireNonNull(logRepository);
     }
 
-
-    private LogResponse append(LogMessage logMessage) {
-        logRepository.add(new Message(logMessage));
-        return LogResponse
-                .newBuilder()
-                .setResponseMessage("OK Sec " + logMessage.getMessage())
-                .build();
-    }
-
     @Override
-    public StreamObserver<LogMessage> append(StreamObserver<LogResponse> responseObserver
-    ) {
-        return StreamObserverUtility.proxyStream(
-                responseObserver,
-                this::append
-        );
+    public void append(LogMessage request, StreamObserver<LogResponse> responseObserver) {
+        logRepository.add(new Message(request.getId(), request.getMessage()));
+        LogResponse response = LogResponse
+                .newBuilder()
+                .setResponseMessage("OK Sec " + request.getMessage())
+                .build();
+
+        // Send the response to the client.
+        responseObserver.onNext(response);
+
+        // Notifies the customer that the call is completed.
+        responseObserver.onCompleted();
     }
 }

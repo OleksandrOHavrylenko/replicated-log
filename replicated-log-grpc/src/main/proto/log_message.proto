@@ -11,7 +11,7 @@ message LogMessage {
 // The LogAppend service definition.
 service LogAppendService {
   // send append log
-  rpc Append (stream LogMessage) returns (stream LogResponse) {}
+  rpc append (LogMessage) returns (LogResponse) {}
 }
 
 // The response message containing the greetings
