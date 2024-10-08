@@ -23,7 +23,7 @@ public class MessageController {
 
     public MessageController(LogRepository logRepository) {
         this.logRepository = logRepository;
-        secClient1 = new SecClient("secondary1", 9090);
+        secClient1 = new SecClient("secondary1", 9091);
     }
 
     @GetMapping("/list")
