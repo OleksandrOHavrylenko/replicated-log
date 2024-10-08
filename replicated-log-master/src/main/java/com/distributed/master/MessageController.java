@@ -14,8 +14,14 @@ import java.util.stream.Collectors;
 public class MessageController {
     private final AtomicLong counter = new AtomicLong();
 
+    private final SecondaryClient secondaryClient;
+
 
     private final List<Message> messageRepository = new ArrayList<>();
+
+    public MessageController(final SecondaryClient secondaryClient) {
+        this.secondaryClient = secondaryClient;
+    }
 
     @GetMapping("/list")
     List<String> getMessages() {
@@ -31,6 +37,8 @@ public class MessageController {
         message.setId(counter.getAndIncrement());
         System.out.println("POST Message: " + message.getMessage());
         messageRepository.add(message);
+        secondaryClient.appendLog(message);
+        System.out.println("Sent to sec");
         return "OK " + message.getMessage();
     }
 }

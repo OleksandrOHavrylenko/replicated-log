@@ -8,10 +8,10 @@ message LogMessage {
   string message = 2;
 }
 
-// The greeter service definition.
+// The LogAppend service definition.
 service LogAppendService {
-  // Sends a greeting
-  rpc Append (LogMessage) returns (LogResponse) {}
+  // send append log
+  rpc Append (stream LogMessage) returns (stream LogResponse) {}
 }
 
 // The response message containing the greetings

@@ -1,0 +1,11 @@
+grpc:
+  client:
+    sec:
+      address: sec1:9090
+      negotiation-type: plaintext
+logging:
+  pattern:
+    console: "[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
+  level:
+    com.distributed.master: info
+  include-application-name: false

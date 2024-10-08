@@ -14,7 +14,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<grpc-spring-boot-starter.version>3.3.4</grpc-spring-boot-starter.version>
+
 	</properties>
 
 	<modules>

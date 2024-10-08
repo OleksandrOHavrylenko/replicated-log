@@ -1,5 +1,5 @@
 FROM openjdk:17-jdk-alpine
-ARG JAR_FILE=master/target/*.jar
+ARG JAR_FILE=replicated-log-master/target/*.jar
 COPY ${JAR_FILE} master.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/master.jar"]

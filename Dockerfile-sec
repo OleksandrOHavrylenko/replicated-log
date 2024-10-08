@@ -1,5 +1,0 @@
-FROM openjdk:17-jdk-alpine
-ARG JAR_FILE=secondary/target/*.jar
-COPY ${JAR_FILE} master.jar
-EXPOSE 8081
-ENTRYPOINT ["java","-jar","/master.jar"]
