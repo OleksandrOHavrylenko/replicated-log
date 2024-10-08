@@ -1,0 +1,31 @@
+version: '2.29.6'
+
+services:
+  secondary1:
+    container_name: secondary1
+    image: ogavrylenko/replicated-log:secondary
+    build:
+      context: .
+      dockerfile: Dockerfile-secondary
+    ports:
+      - 8081:8081
+    networks:
+      - backend-net
+
+
+  master:
+    image: ogavrylenko/replicated-log:master
+    container_name: master
+    build:
+      context: .
+      dockerfile: Dockerfile-master
+    ports:
+      - 8080:8080
+    networks:
+      - backend-net
+    depends_on:
+      - secondary1
+
+networks:
+  backend-net:
+    driver: bridge

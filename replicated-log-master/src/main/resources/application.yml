@@ -1,7 +1,7 @@
 grpc:
   client:
     sec:
-      address: sec1:9090
+      address: secondary1:9090
       negotiation-type: plaintext
 logging:
   pattern:
