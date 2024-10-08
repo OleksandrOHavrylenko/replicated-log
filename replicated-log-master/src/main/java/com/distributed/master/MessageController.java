@@ -1,44 +1,46 @@
 package com.distributed.master;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RestController
 public class MessageController {
+
+    private static final Logger log = LoggerFactory.getLogger(MessageController.class);
+
     private final AtomicLong counter = new AtomicLong();
 
+    private final LogRepository logRepository;
     private final SecondaryClient secondaryClient;
 
-
-    private final List<Message> messageRepository = new ArrayList<>();
-
-    public MessageController(final SecondaryClient secondaryClient) {
+    public MessageController(final SecondaryClient secondaryClient, LogRepository logRepository) {
         this.secondaryClient = secondaryClient;
+        this.logRepository = logRepository;
     }
 
     @GetMapping("/list")
     List<String> getMessages() {
-        System.out.println("GET Messages");
-        return messageRepository.stream()
+        log.info("GET all messages.");
+        return logRepository.getAll().stream()
                 .map(Message::getMessage)
                 .collect(Collectors.toList());
 //        return messageRepository;
     }
 
     @PostMapping("/append")
-    String  addMessage(@RequestBody Message message) {
+    String append(@RequestBody Message message) {
         message.setId(counter.getAndIncrement());
-        System.out.println("POST Message: " + message.getMessage());
-        messageRepository.add(message);
+        logRepository.add(message);
         secondaryClient.appendLog(message);
-        System.out.println("Sent to sec");
+        log.info("Message replicated to secondaries.");
         return "OK " + message.getMessage();
     }
 }

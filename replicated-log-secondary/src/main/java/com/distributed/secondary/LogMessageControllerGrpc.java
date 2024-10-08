@@ -8,15 +8,22 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 @GrpcService
 public class LogMessageControllerGrpc extends LogAppendServiceGrpc.LogAppendServiceImplBase {
 
     private static final Logger log = LoggerFactory.getLogger(LogMessageControllerGrpc.class);
 
-    private LogResponse append(LogMessage logMessage) {
-        log.info("Received request: {}-{}", logMessage.getId(), logMessage.getMessage());
-        System.out.println("Received request: " + logMessage);
+    private final LogRepository logRepository;
 
+    public LogMessageControllerGrpc(final LogRepository logRepository) {
+        this.logRepository = Objects.requireNonNull(logRepository);
+    }
+
+
+    private LogResponse append(LogMessage logMessage) {
+        logRepository.add(new Message(logMessage));
         return LogResponse
                 .newBuilder()
                 .setResponseMessage("OK Sec " + logMessage.getMessage())

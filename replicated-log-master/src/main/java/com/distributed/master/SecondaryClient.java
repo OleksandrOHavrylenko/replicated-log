@@ -28,7 +28,7 @@ public class SecondaryClient {
         return new StreamObserver<>() {
             @Override
             public void onNext(LogResponse logResponse) {
-                System.out.println("LogResponse from sec " + logResponse.getResponseMessage());
+                log.info("LogResponse from sec {}", logResponse.getResponseMessage());
             }
 
             @Override
