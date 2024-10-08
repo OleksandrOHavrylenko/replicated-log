@@ -27,7 +27,7 @@ public class MessageController {
     }
 
     @PostMapping("/append")
-    String  addMessage(@RequestBody Message message) throws InterruptedException {
+    String  addMessage(@RequestBody Message message) {
         message.setId(counter.getAndIncrement());
         System.out.println("POST Message: " + message.getMessage());
         messageRepository.add(message);

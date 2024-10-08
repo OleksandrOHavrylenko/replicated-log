@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option java_package = "com.distributed.stubs";
+option java_multiple_files = true;
+
+message LogMessage {
+  int64 id = 1;
+  string message = 2;
+}
+
+// The greeter service definition.
+service LogAppendService {
+  // Sends a greeting
+  rpc Append (LogMessage) returns (LogResponse) {}
+}
+
+// The response message containing the greetings
+message LogResponse {
+  string response_message = 1;
+}
