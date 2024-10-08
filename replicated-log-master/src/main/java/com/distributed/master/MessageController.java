@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
@@ -18,29 +19,22 @@ public class MessageController {
 
     private final AtomicLong counter = new AtomicLong();
 
-    private final LogRepository logRepository;
-    private final SecClient secClient1;
+    private final MessageService messageService;
 
-    public MessageController(LogRepository logRepository) {
-        this.logRepository = logRepository;
-        secClient1 = new SecClient("secondary1", 9091);
+    public MessageController(final MessageService messageService) {
+        this.messageService = Objects.requireNonNull(messageService);
     }
 
     @GetMapping("/list")
     List<String> getMessages() {
-        log.info("GET all messages.");
-        return logRepository.getAll().stream()
+        return messageService.list().stream()
                 .map(Message::getMessage)
                 .collect(Collectors.toList());
-//        return messageRepository;
     }
 
     @PostMapping("/append")
     String append(@RequestBody Message message) {
         message.setId(counter.getAndIncrement());
-        logRepository.add(message);
-        secClient1.replicateLog(message);
-        log.info("Message replicated to secondaries.");
-        return "OK " + message.getMessage();
+        return messageService.append(message);
     }
 }
