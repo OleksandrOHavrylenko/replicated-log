@@ -1,6 +1,5 @@
 package com.distributed.secondary;
 
-import com.distributed.stubs.LogMessage;
 import lombok.Getter;
 import lombok.Setter;
 

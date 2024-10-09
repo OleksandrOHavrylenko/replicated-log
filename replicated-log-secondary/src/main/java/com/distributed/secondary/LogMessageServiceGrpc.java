@@ -4,7 +4,6 @@ import com.distributed.stubs.LogAppendServiceGrpc;
 import com.distributed.stubs.LogMessage;
 import com.distributed.stubs.LogResponse;
 import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,11 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
                 .setResponseMessage("OK Sec " + request.getMessage())
                 .build();
 
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            log.error("InterruptedException occurred while sleep", e);
+//        }
         // Send the response to the client.
         responseObserver.onNext(response);
 

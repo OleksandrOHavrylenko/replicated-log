@@ -8,7 +8,7 @@ grpc:
     port: 9090
 logging:
   pattern:
-    console: "[%d{yyyy-MM-dd HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
+    console: "[%d{HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
   level:
     com.distributed.master: info
   include-application-name: false
