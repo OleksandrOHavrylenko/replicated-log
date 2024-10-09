@@ -12,6 +12,15 @@ services:
     networks:
       - backend-net
 
+  secondary2:
+    container_name: secondary2
+    image: ogavrylenko/replicated-log:secondary
+    ports:
+      - 8082:8081
+    networks:
+      - backend-net
+    depends_on:
+      - secondary1
 
   master:
     image: ogavrylenko/replicated-log:master
@@ -25,7 +34,9 @@ services:
       - backend-net
     depends_on:
       - secondary1
+      - secondary2
 
 networks:
   backend-net:
+    name: backend-net
     driver: bridge
