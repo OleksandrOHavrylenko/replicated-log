@@ -1,7 +1,7 @@
 package com.distributed.secondary;
 
 import com.distributed.stubs.LogAppendServiceGrpc;
-import com.distributed.stubs.LogMessage;
+import com.distributed.stubs.LogRequest;
 import com.distributed.stubs.LogResponse;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
     }
 
     @Override
-    public void append(LogMessage request, StreamObserver<LogResponse> responseObserver) {
+    public void append(LogRequest request, StreamObserver<LogResponse> responseObserver) {
         logRepository.add(new Message(request.getId(), request.getMessage()));
         LogResponse response = LogResponse
                 .newBuilder()

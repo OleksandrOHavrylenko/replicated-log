@@ -1,7 +1,7 @@
 package com.distributed.master;
 
 import com.distributed.stubs.LogAppendServiceGrpc;
-import com.distributed.stubs.LogMessage;
+import com.distributed.stubs.LogRequest;
 import com.distributed.stubs.LogResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -22,7 +22,11 @@ public class SecClient {
 
     public String replicateLog(final Message message) {
 
-        LogMessage request = LogMessage.newBuilder().setId(message.getId()).setMessage(message.getMessage()).build();
+        LogRequest request = LogRequest.newBuilder()
+                .setId(message.getId())
+                .setMessage(message.getMessage())
+                .build();
+
         LogResponse response = client.append(request);
         log.info("Response from secondary node: {}", response.getResponseMessage());
 
