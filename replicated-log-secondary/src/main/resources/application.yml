@@ -5,7 +5,8 @@ server:
   port: ${PORT:8081}
 grpc:
   server:
-    port: 9090
+    port: ${GRPC_PORT:9090}
+    sleepInMillis: ${SLEEP_IN_MILLIS:0}
 logging:
   pattern:
     console: "[%d{HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"

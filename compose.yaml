@@ -2,8 +2,12 @@ version: '2.29.6'
 
 services:
   secondary1:
+    environment:
+      - GRPC_PORT=9090
+      - SLEEP_IN_MILLIS=5000
+
     container_name: secondary1
-    image: ogavrylenko/replicated-log:secondary
+    image: ogavrylenko/replicated-log-secondary:v1
     build:
       context: .
       dockerfile: Dockerfile-secondary
@@ -13,8 +17,12 @@ services:
       - backend-net
 
   secondary2:
+    environment:
+      - GRPC_PORT=9090
+      - SLEEP_IN_MILLIS=0
+
     container_name: secondary2
-    image: ogavrylenko/replicated-log:secondary
+    image: ogavrylenko/replicated-log-secondary:v1
     ports:
       - 8082:8081
     networks:
@@ -23,7 +31,13 @@ services:
       - secondary1
 
   master:
-    image: ogavrylenko/replicated-log:master
+    environment:
+      - SEC1_HOST=secondary1
+      - SEC1_PORT=9090
+      - SEC2_HOST=secondary2
+      - SEC2_PORT=9090
+      - SEC_NUM=2
+    image: ogavrylenko/replicated-log-master:v1
     container_name: master
     build:
       context: .

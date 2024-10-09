@@ -29,7 +29,7 @@ public class MessageService {
     }
 
     public List<Message> list() {
-        log.info("GET all messages.");
+        log.info("GET all messages: {}", logRepository.getAll());
         return logRepository.getAll();
     }
 }

@@ -22,7 +22,7 @@ public class SecMessageController {
 
     @GetMapping("/list")
     List<String> getMessages() {
-        log.info("GET all messages.");
+        log.info("GET all messages: {}", logRepository.getAll());
         return logRepository.getAll().stream()
                 .map(Message::getMessage)
                 .collect(Collectors.toList());

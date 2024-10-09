@@ -2,6 +2,7 @@ package com.distributed.master;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ExecutionException;
@@ -14,14 +15,15 @@ public class ReplicationService {
 
     private static final Logger log = LoggerFactory.getLogger(ReplicationService.class);
 
-    private int secNumber = 2;
     private final SecClient secClient1;
     private final SecClient secClient2;
-    private ExecutorService executor;
+    private final ExecutorService executor;
 
-    public ReplicationService() {
-        this.secClient1 = new SecClient("secondary1", 9091);
-        this.secClient2 = new SecClient("secondary2", 9091);
+    public ReplicationService(@Value("${client.sec1.host}") final String sec1Host, @Value("${client.sec1.port}") final int sec1Port,
+                              @Value("${client.sec2.host}") final String sec2Host, @Value("${client.sec2.port}") final int sec2Port,
+                              @Value("${client.secNumber}") final int secNumber) {
+        this.secClient1 = new SecClient(sec1Host, sec1Port);
+        this.secClient2 = new SecClient(sec2Host, sec2Port);
         this.executor = Executors.newFixedThreadPool(secNumber);
     }
 

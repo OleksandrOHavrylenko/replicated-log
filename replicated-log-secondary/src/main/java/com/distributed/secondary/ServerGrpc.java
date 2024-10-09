@@ -5,6 +5,7 @@ import io.grpc.ServerBuilder;
 import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,11 +15,12 @@ public class ServerGrpc {
 
     private static final Logger log = LoggerFactory.getLogger(ServerGrpc.class);
 
-    private final int port = 9091;
+    private int port;
 
     private Server grpcServer;
 
-    public ServerGrpc(final LogMessageServiceGrpc logMessageServiceGrpc ) {
+    public ServerGrpc(final LogMessageServiceGrpc logMessageServiceGrpc, @Value("${grpc.server.port}") final int port) {
+        this.port = port;
         grpcServer = ServerBuilder.
                 forPort(port).
                 addService(logMessageServiceGrpc).

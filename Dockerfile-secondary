@@ -1,5 +1,5 @@
 FROM openjdk:17-jdk-alpine
 ARG JAR_FILE=replicated-log-secondary/target/*.jar
 COPY ${JAR_FILE} secondary.jar
-EXPOSE 8081 9090
+EXPOSE 8081
 ENTRYPOINT ["java","-jar","/secondary.jar"]
