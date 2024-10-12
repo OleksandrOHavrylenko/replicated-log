@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RestController
 public class MessageController {
 
     private static final Logger log = LoggerFactory.getLogger(MessageController.class);
-
-    private final AtomicLong counter = new AtomicLong();
 
     private final MessageService messageService;
 
@@ -34,7 +31,6 @@ public class MessageController {
 
     @PostMapping("/append")
     String append(@RequestBody Message message) {
-        message.setId(counter.getAndIncrement());
         return messageService.append(message);
     }
 }

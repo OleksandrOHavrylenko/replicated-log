@@ -6,11 +6,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class MessageService {
 
     private static final Logger log = LoggerFactory.getLogger(MessageService.class);
+
+    private final AtomicLong counter = new AtomicLong();
 
     private final LogRepository logRepository;
 
@@ -23,7 +26,10 @@ public class MessageService {
     }
 
     public String append(Message message) {
+        message.setId(counter.getAndIncrement());
+
         logRepository.add(message);
+
         String responseMessage = replicationService.replicateToAll(message);
         return responseMessage;
     }
