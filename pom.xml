@@ -21,6 +21,7 @@
 		<module>replicated-log-master</module>
 		<module>replicated-log-secondary</module>
 		<module>replicated-log-grpc</module>
+		<module>replicated-log-commons</module>
 	</modules>
 
 </project>

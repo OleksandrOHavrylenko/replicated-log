@@ -1,5 +1,6 @@
 package com.distributed.secondary;
 
+import com.distributed.commons.LogItem;
 import com.distributed.stubs.LogAppendServiceGrpc;
 import com.distributed.stubs.LogRequest;
 import com.distributed.stubs.LogResponse;
@@ -29,7 +30,7 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
     @Override
     public void append(LogRequest request, StreamObserver<LogResponse> responseObserver) {
         sleep();
-        logRepository.add(new Message(request.getId(), request.getMessage()));
+        logRepository.add(new LogItem(request.getId(), request.getMessage()));
         LogResponse response = LogResponse
                 .newBuilder()
                 .setResponseMessage("OK Sec " + request.getMessage())

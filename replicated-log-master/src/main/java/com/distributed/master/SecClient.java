@@ -1,5 +1,6 @@
 package com.distributed.master;
 
+import com.distributed.commons.LogItem;
 import com.distributed.stubs.LogAppendServiceGrpc;
 import com.distributed.stubs.LogRequest;
 import com.distributed.stubs.LogResponse;
@@ -20,11 +21,11 @@ public class SecClient {
         client = LogAppendServiceGrpc.newBlockingStub(channel);
     }
 
-    public String replicateLog(final Message message) {
+    public String replicateLog(final LogItem item) {
 
         LogRequest request = LogRequest.newBuilder()
-                .setId(message.getId())
-                .setMessage(message.getMessage())
+                .setId(item.getId())
+                .setMessage(item.getMessage())
                 .build();
 
         LogResponse response = client.append(request);

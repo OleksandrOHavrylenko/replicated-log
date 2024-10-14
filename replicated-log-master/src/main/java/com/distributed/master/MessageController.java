@@ -1,5 +1,6 @@
 package com.distributed.master;
 
+import com.distributed.commons.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @RestController
 public class MessageController {
@@ -24,9 +24,7 @@ public class MessageController {
 
     @GetMapping("/list")
     List<String> getMessages() {
-        return messageService.list().stream()
-                .map(Message::getMessage)
-                .collect(Collectors.toList());
+        return messageService.list();
     }
 
     @PostMapping("/append")

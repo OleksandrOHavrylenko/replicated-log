@@ -1,5 +1,6 @@
 package com.distributed.secondary;
 
+import com.distributed.commons.LogItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +25,7 @@ public class SecMessageController {
     List<String> getMessages() {
         log.info("GET all messages: {}", logRepository.getAll());
         return logRepository.getAll().stream()
-                .map(Message::getMessage)
+                .map(LogItem::getMessage)
                 .collect(Collectors.toList());
-//        return messageRepository;
     }
 }

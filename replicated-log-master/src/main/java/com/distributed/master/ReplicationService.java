@@ -1,5 +1,6 @@
 package com.distributed.master;
 
+import com.distributed.commons.LogItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,9 @@ public class ReplicationService {
         this.executor = Executors.newFixedThreadPool(secNumber);
     }
 
-    public String replicateToAll(Message message) {
-        Future<String> futureSec1 = replicateTo(secClient1, message);
-        Future<String> futureSec2 = replicateTo(secClient2, message);
+    public String replicateToAll(LogItem item) {
+        Future<String> futureSec1 = replicateTo(secClient1, item);
+        Future<String> futureSec2 = replicateTo(secClient2, item);
         log.info("replicateToAll executed");
 
         String response1 = "";
@@ -51,8 +52,8 @@ public class ReplicationService {
     }
 
 
-    public Future<String> replicateTo(SecClient secClient, Message message) {
-        return executor.submit(() -> secClient.replicateLog(message));
+    public Future<String> replicateTo(SecClient secClient, LogItem item) {
+        return executor.submit(() -> secClient.replicateLog(item));
     }
 
 }
