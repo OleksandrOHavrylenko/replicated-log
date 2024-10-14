@@ -48,7 +48,7 @@ public class ReplicationService {
         log.info("Response from sec2 {}: ", response2);
         log.info("Message replicated to all secondaries.");
 
-        return "OK " + message.getMessage();
+        return "OK " + item.getMessage();
     }
 
 
