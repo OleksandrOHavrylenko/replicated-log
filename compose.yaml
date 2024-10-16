@@ -4,7 +4,7 @@ services:
   secondary1:
     environment:
       - GRPC_PORT=9090
-      - SLEEP_IN_MILLIS=5000
+      - SLEEP_IN_MILLIS=15000
 
     container_name: secondary1
     image: ogavrylenko/replicated-log-secondary:v1

@@ -30,7 +30,8 @@ public class MessageService {
 
         logRepository.add(item);
 
-        String responseMessage = replicationService.replicateToAll(item, message.getWriteConcern());
+//        writeConcern should be decremented by 1 because 1 write was already done on master node
+        String responseMessage = replicationService.asyncReplicateToAll(item, message.getWriteConcern() - 1);
         return responseMessage;
     }
 

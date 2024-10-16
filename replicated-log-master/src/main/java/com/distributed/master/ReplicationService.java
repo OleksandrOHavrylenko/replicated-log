@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 @Service
 public class ReplicationService {
@@ -30,32 +27,25 @@ public class ReplicationService {
         this.executor = Executors.newFixedThreadPool(replicasNum);
     }
 
-    public String replicateToAll(final LogItem item, final int writeConcern) {
-        Future<String> futureSec1 = replicateTo(secClient1, item);
-        Future<String> futureSec2 = replicateTo(secClient2, item);
+    public String asyncReplicateToAll(final LogItem item, final int writeConcern) {
+        CountDownLatch doneLatch = new CountDownLatch(Math.min(writeConcern, this.replicasNum));
+
+        asyncReplicateTo(secClient1, item, doneLatch);
+        asyncReplicateTo(secClient2, item, doneLatch);
         log.info("replicateToAll executed");
 
-        String response1 = "";
-        String response2 = "";
         try {
-            response1 = futureSec1.get();
-            response2 = futureSec2.get();
+            doneLatch.await();
         } catch (InterruptedException e) {
-            log.error("RuntimeException occurred while replication", e);
-        } catch (ExecutionException e) {
-            log.error("ExecutionException occurred while replication", e);
+            log.info("RuntimeException occurred while replication", e);
         }
 
-        log.info("Response from replica {} {}: ", secClient1.getHost(), response1);
-        log.info("Response from replica {} {}: ", secClient2.getHost(), response2);
         log.info("Message replicated to all secondaries.");
 
         return String.format("ACK %s",item.getMessage());
     }
 
-
-    public Future<String> replicateTo(SecClient secClient, LogItem item) {
-        return executor.submit(() -> secClient.replicateLog(item));
+    public void asyncReplicateTo(SecClient secClient, LogItem item, CountDownLatch doneLatch) {
+        executor.execute(() -> secClient.asyncReplicateLog(item, doneLatch));
     }
-
 }
