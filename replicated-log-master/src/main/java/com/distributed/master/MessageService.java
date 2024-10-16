@@ -30,7 +30,7 @@ public class MessageService {
 
         logRepository.add(item);
 
-        String responseMessage = replicationService.replicateToAll(item);
+        String responseMessage = replicationService.replicateToAll(item, message.getWriteConcern());
         return responseMessage;
     }
 

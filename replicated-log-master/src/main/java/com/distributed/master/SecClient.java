@@ -16,9 +16,16 @@ public class SecClient {
     private final ManagedChannel channel;
     private LogAppendServiceGrpc.LogAppendServiceBlockingStub client;
 
-    public SecClient(final String address, final int port) {
-        channel = ManagedChannelBuilder.forAddress(address, port).usePlaintext().build();
+    private final String host;
+
+    public SecClient(final String host, final int port) {
+        this.host = host;
+        channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         client = LogAppendServiceGrpc.newBlockingStub(channel);
+    }
+
+    public String getHost() {
+        return host;
     }
 
     public String replicateLog(final LogItem item) {

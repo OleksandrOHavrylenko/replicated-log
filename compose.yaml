@@ -36,7 +36,7 @@ services:
       - SEC1_PORT=9090
       - SEC2_HOST=secondary2
       - SEC2_PORT=9090
-      - SEC_NUM=2
+      - REPLICAS_NUM=2
     image: ogavrylenko/replicated-log-master:v1
     container_name: master
     build:
