@@ -1,8 +1,13 @@
 package com.distributed.commons;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Message {
+
 	private String message;
-	private int w;
+
+	@JsonProperty("w")
+	private int writeConcern;
 
 	public String getMessage() {
 		return message;
@@ -12,19 +17,19 @@ public class Message {
 		this.message = message;
 	}
 
-	public int getW() {
-		return w;
+	public int getWriteConcern() {
+		return writeConcern;
 	}
 
-	public void setW(int w) {
-		this.w = w;
+	public void setWriteConcern(int writeConcern) {
+		this.writeConcern = writeConcern;
 	}
 
 	@Override
 	public String toString() {
 		return "Message{" +
 				"message='" + message + '\'' +
-				", writeConcern=" + w +
+				", writeConcern=" + writeConcern +
 				'}';
 	}
 }
