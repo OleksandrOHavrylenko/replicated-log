@@ -1,5 +1,4 @@
 client:
-  replicasNum: ${REPLICAS_NUM:2}
   sec1:
     host: ${SEC1_HOST:secondary1}
     port: ${SEC1_PORT:9090}

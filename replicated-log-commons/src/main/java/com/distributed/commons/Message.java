@@ -2,7 +2,7 @@ package com.distributed.commons;
 
 public class Message {
 	private String message;
-	private int writeConcern;
+	private int w;
 
 	public String getMessage() {
 		return message;
@@ -12,19 +12,19 @@ public class Message {
 		this.message = message;
 	}
 
-	public int getWriteConcern() {
-		return writeConcern;
+	public int getW() {
+		return w;
 	}
 
-	public void setWriteConcern(int writeConcern) {
-		this.writeConcern = writeConcern;
+	public void setW(int w) {
+		this.w = w;
 	}
 
 	@Override
 	public String toString() {
 		return "Message{" +
 				"message='" + message + '\'' +
-				", writeConcern=" + writeConcern +
+				", writeConcern=" + w +
 				'}';
 	}
 }

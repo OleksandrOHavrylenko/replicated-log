@@ -21,7 +21,7 @@ Secondary 1 node runs on localhost:8081\
 Secondary 2 node runs on localhost:8082
 
 ```Shell
-curl -H 'Content-Type: application/json' -X POST http://localhost:8080/append -d '{ "message":"msg1", "writeConcern":2}'
+curl -H 'Content-Type: application/json' -X POST http://localhost:8080/append -d '{ "message":"msg1", "w":2}'
 
 curl -X GET http://localhost:8080/list
 curl -X GET http://localhost:8081/list
