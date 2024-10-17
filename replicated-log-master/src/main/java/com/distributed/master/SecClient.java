@@ -31,7 +31,7 @@ public class SecClient {
         return host;
     }
 
-    public void asyncReplicateLog(final LogItem item, CountDownLatch doneLatch) {
+    public void asyncReplicateLog(final LogItem item, CountDownLatch writeConcernLatch) {
         LogRequest request = LogRequest.newBuilder()
                 .setId(item.getId())
                 .setMessage(item.getMessage())
@@ -45,14 +45,14 @@ public class SecClient {
 
             @Override
             public void onError(Throwable throwable) {
-                log.warn("Replication to {} Failed: {}", getHost(), Status.fromThrowable(throwable));
-                doneLatch.countDown();
+                log.warn("Replication of {} to {} Failed: {}",item.getMessage(), getHost(), Status.fromThrowable(throwable));
+                writeConcernLatch.countDown();
             }
 
             @Override
             public void onCompleted() {
-                log.info("Replication to {} Completed", getHost());
-                doneLatch.countDown();
+                log.info("Replication of {} to {} Completed", item.getMessage(), getHost());
+                writeConcernLatch.countDown();
             }
         };
 

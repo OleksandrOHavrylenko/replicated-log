@@ -25,20 +25,20 @@ public class ReplicationService {
         this.executor = Executors.newFixedThreadPool(secClients.size());
     }
 
-    public String asyncReplicateToAll(final LogItem item, final int writeConcern) {
-        CountDownLatch doneLatch = new CountDownLatch(Math.min(writeConcern, secClients.size()));
+    public String replicateToAll(final LogItem item, final int writeConcern) {
+        CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern, secClients.size()));
 
         for (SecClient secClient : secClients) {
-            executor.execute(() -> secClient.asyncReplicateLog(item, doneLatch));
+            executor.execute(() -> secClient.asyncReplicateLog(item, writeConcernLatch));
         }
 
+        log.info("replicateToAll executed");
+
         try {
-            doneLatch.await();
+            writeConcernLatch.await();
         } catch (InterruptedException e) {
             log.info("RuntimeException occurred while replication", e);
         }
-
-        log.info("Message {} replicated to all secondaries.", item.getMessage());
 
         return String.format("ACK %s",item.getMessage());
     }
