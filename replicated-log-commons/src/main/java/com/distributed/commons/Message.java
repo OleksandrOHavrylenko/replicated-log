@@ -1,9 +1,11 @@
 package com.distributed.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 
 public class Message {
 
+    @NotNull
 	private String message;
 
 	@JsonProperty("w")

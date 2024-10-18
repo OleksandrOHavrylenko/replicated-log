@@ -45,8 +45,11 @@ public class SecClient {
 
             @Override
             public void onError(Throwable throwable) {
-                log.warn("Replication of {} to {} Failed: {}",item.getMessage(), getHost(), Status.fromThrowable(throwable));
-                writeConcernLatch.countDown();
+                // TODO retry logic should be implemented here in v3
+                log.error("Replication of {} to {} Failed: {}", item.getMessage(), getHost(), Status.fromThrowable(throwable));
+                throw new RuntimeException(String.format("Replication of %s to %s Failed due to status: %s",
+                        item.getMessage(), getHost(), Status.fromThrowable(throwable)),
+                        throwable);
             }
 
             @Override
