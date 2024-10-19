@@ -1,6 +1,7 @@
 package com.distributed.commons;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 public class Message {
@@ -8,8 +9,10 @@ public class Message {
     @NotNull
 	private String message;
 
+//	default value is one due to min 1 write on master node
 	@JsonProperty("w")
-	private int writeConcern;
+	@Min(1)
+	private int writeConcern = 1;
 
 	public String getMessage() {
 		return message;
