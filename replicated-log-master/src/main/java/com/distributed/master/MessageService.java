@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -30,14 +29,14 @@ public class MessageService {
 
         logRepository.add(item);
 
-        String responseMessage = replicationService.replicateToAll(item);
+//        writeConcern should be decremented by 1 because 1 write was already done on master node
+        String responseMessage = replicationService.replicateToAll(item, message.getWriteConcern() - 1);
         return responseMessage;
     }
 
     public List<String> list() {
-        log.info("GET all messages: {}", logRepository.getAll());
-        return logRepository.getAll().stream().
-                map(LogItem::getMessage).
-                collect(Collectors.toList());
+        List<String> allMessages = logRepository.getAll();
+        log.info("GET all messages: {}", allMessages);
+        return allMessages;
     }
 }

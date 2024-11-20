@@ -1,5 +1,7 @@
+spring:
+  application:
+    name: master
 client:
-  secNumber: ${SEC_NUM:2}
   sec1:
     host: ${SEC1_HOST:secondary1}
     port: ${SEC1_PORT:9090}
@@ -7,8 +9,10 @@ client:
     host: ${SEC2_HOST:secondary2}
     port: ${SEC2_PORT:9090}
 logging:
+  file:
+    name: /var/log/master.log
   pattern:
-    console: "[%d{HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
+    dateformat: "[%d{HH:mm:ss.SSS}]"
   level:
     com.distributed.master: info
   include-application-name: false
