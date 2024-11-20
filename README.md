@@ -21,7 +21,7 @@ Secondary 1 node runs on localhost:8081\
 Secondary 2 node runs on localhost:8082
 
 ```Shell
-curl -H 'Content-Type: application/json' -X POST http://localhost:8080/append -d '{ "message":"msg1"}'
+curl -H 'Content-Type: application/json' -X POST http://localhost:8080/append -d '{ "message":"msg1", "w":2}'
 
 curl -X GET http://localhost:8080/list
 curl -X GET http://localhost:8081/list
@@ -33,7 +33,7 @@ curl -X GET http://localhost:8082/list
 #### To build master Docker image
 
 ```Docker
-docker build -f Dockerfile-master -t ogavrylenko/replicated-log-master:v1 .
+docker build -f Dockerfile-master -t ogavrylenko/replicated-log-master:v2 .
 ```
 
 #### To run master Docker container on port 8080
@@ -44,9 +44,9 @@ docker run --rm -p 8080:8080 --net backend-net --name master ogavrylenko/replica
 #### To build secondary Docker image
 
 ```Docker
-docker build -f Dockerfile-secondary -t ogavrylenko/replicated-log-secondary:v1 .
+docker build -f Dockerfile-secondary -t ogavrylenko/replicated-log-secondary:v2 .
 ```
 #### To run secondary Docker container on port 8081
 ```Docker
-docker run --rm -p 8081:8081 --net backend-net --name secondary1 ogavrylenko/replicated-log-secondary:v1
+docker run --rm -p 8081:8081 --net backend-net --name secondary1 ogavrylenko/replicated-log-secondary:v2
 ```

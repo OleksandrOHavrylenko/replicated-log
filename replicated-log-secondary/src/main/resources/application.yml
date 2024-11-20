@@ -1,6 +1,6 @@
 spring:
   application:
-    name: secondarynode
+    name: secondary
 server:
   port: ${PORT:8081}
 grpc:
@@ -8,8 +8,10 @@ grpc:
     port: ${GRPC_PORT:9090}
     sleepInMillis: ${SLEEP_IN_MILLIS:0}
 logging:
+  file:
+    name: /var/log/secondary.log
   pattern:
-    console: "[%d{HH:mm:ss.SSS}] %-5level [%t] [%logger - %line]: %m%n"
+    dateformat: "%d{HH:mm:ss.SSS}"
   level:
     com.distributed.master: info
   include-application-name: false

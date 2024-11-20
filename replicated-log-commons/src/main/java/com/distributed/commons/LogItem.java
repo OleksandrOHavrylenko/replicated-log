@@ -23,7 +23,7 @@ public class LogItem {
 
     @Override
     public String toString() {
-        return "DataItem{" +
+        return "LogItem{" +
                 "id=" + id +
                 ", message='" + message + '\'' +
                 '}';

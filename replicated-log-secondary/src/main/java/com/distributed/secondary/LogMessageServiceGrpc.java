@@ -33,7 +33,7 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
         logRepository.add(new LogItem(request.getId(), request.getMessage()));
         LogResponse response = LogResponse
                 .newBuilder()
-                .setResponseMessage("OK Sec " + request.getMessage())
+                .setResponseMessage(String.format("ACK %d", request.getId()))
                 .build();
 
         // Send the response to the client.

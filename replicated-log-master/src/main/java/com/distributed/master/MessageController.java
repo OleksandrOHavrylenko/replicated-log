@@ -1,6 +1,7 @@
 package com.distributed.master;
 
 import com.distributed.commons.Message;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class MessageController {
     }
 
     @PostMapping("/append")
-    String append(@RequestBody Message message) {
+    String append(@Valid @RequestBody Message message) {
         return messageService.append(message);
     }
 }
