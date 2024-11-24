@@ -20,18 +20,20 @@ public class SecClient {
     private final String host;
     private final ManagedChannel channel;
     private final LogAppendServiceGrpc.LogAppendServiceStub asyncStub;
+    private final LogAppendServiceGrpc.LogAppendServiceBlockingStub blockingStub;
 
     public SecClient(final String host, final int port) {
         this.host = host;
         this.channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         this.asyncStub = LogAppendServiceGrpc.newStub(this.channel);
+        this.blockingStub = LogAppendServiceGrpc.newBlockingStub(this.channel);
     }
 
-    public String getHost() {
+    private String getHost() {
         return host;
     }
 
-    public void asyncReplicateLog(final LogItem item, CountDownLatch writeConcernLatch) {
+    public void asyncReplicateLog(final LogItem item, final CountDownLatch writeConcernLatch) {
         LogRequest request = LogRequest.newBuilder()
                 .setId(item.getId())
                 .setMessage(item.getMessage())

@@ -1,35 +1,34 @@
 package com.distributed.master;
 
 import com.distributed.commons.LogItem;
+import com.distributed.master.replica.Replica;
+import com.distributed.master.replica.ReplicaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class ReplicationService {
 
     private static final Logger log = LoggerFactory.getLogger(ReplicationService.class);
 
-    private final List<SecClient> secClients;
+    private final ReplicaRepository replicaRepository;
     private final ExecutorService executor;
 
-    public ReplicationService(@Value("${client.sec1.host}") final String sec1Host, @Value("${client.sec1.port}") final int sec1Port,
-                              @Value("${client.sec2.host}") final String sec2Host, @Value("${client.sec2.port}") final int sec2Port) {
-
-        this.secClients = Arrays.asList(new SecClient(sec1Host, sec1Port), new SecClient(sec2Host, sec2Port));
-        this.executor = Executors.newFixedThreadPool(secClients.size());
+    public ReplicationService(final ReplicaRepository replicaRepository) {
+        this.replicaRepository = replicaRepository;
+        this.executor = Executors.newFixedThreadPool(replicaRepository.getReplicasCount());
     }
 
     public String replicateToAll(final LogItem item, final int writeConcern) {
-        CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern, secClients.size()));
+        CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern, replicaRepository.getReplicasCount()));
 
-        for (SecClient secClient : secClients) {
-            executor.execute(() -> secClient.asyncReplicateLog(item, writeConcernLatch));
+        for (Replica replica : replicaRepository.getReplicas()) {
+            executor.submit(() -> replica.asyncSendMessage(item, writeConcernLatch));
         }
 
         log.info("replicateToAll executed");

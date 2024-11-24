@@ -7,7 +7,7 @@ services:
       - SLEEP_IN_MILLIS=15000
 
     container_name: secondary1
-    image: ogavrylenko/replicated-log-secondary:v2
+    image: ogavrylenko/replicated-log-secondary:v3
     build:
       context: .
       dockerfile: Dockerfile-secondary
@@ -22,7 +22,7 @@ services:
       - SLEEP_IN_MILLIS=3000
 
     container_name: secondary2
-    image: ogavrylenko/replicated-log-secondary:v2
+    image: ogavrylenko/replicated-log-secondary:v3
     ports:
       - 8082:8081
     networks:
@@ -36,7 +36,7 @@ services:
       - SEC1_PORT=9090
       - SEC2_HOST=secondary2
       - SEC2_PORT=9090
-    image: ogavrylenko/replicated-log-master:v2
+    image: ogavrylenko/replicated-log-master:v3
     container_name: master
     build:
       context: .
