@@ -19,11 +19,12 @@ public class ServerGrpc {
 
     private Server grpcServer;
 
-    public ServerGrpc(final LogMessageServiceGrpc logMessageServiceGrpc, @Value("${grpc.server.port}") final int port) {
+    public ServerGrpc(final LogMessageServiceGrpc logMessageServiceGrpc, final HealthService healthService, @Value("${grpc.server.port}") final int port) {
         this.port = port;
         grpcServer = ServerBuilder.
                 forPort(port).
                 addService(logMessageServiceGrpc).
+                addService(healthService).
                 build();
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-//@GrpcService
 @Service
 public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendServiceImplBase {
 
@@ -33,6 +32,7 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
         logRepository.add(new LogItem(request.getId(), request.getMessage()));
         LogResponse response = LogResponse
                 .newBuilder()
+                .setNextId(0L)
                 .setResponseMessage(String.format("ACK %d", request.getId()))
                 .build();
 

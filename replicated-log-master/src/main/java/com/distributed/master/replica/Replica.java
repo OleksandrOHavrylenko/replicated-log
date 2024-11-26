@@ -22,12 +22,12 @@ public class Replica {
         this.secClient = new SecClient(host, port);
     }
 
-    public void asyncSendMessage(@NotNull final LogItem item, final CountDownLatch writeConcernLatch) {
-        this.secClient.asyncReplicateLog(item, writeConcernLatch);
+    public void asyncSendMessage(@NotNull final LogItem item, final CountDownLatch replicationDone) {
+        this.secClient.asyncReplicateLog(item, replicationDone);
     }
 
     public void ping() {
-//        TODO add heartbeat
+        this.secClient.syncPing();
     }
 }
 

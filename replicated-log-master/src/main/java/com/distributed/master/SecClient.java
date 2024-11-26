@@ -1,9 +1,8 @@
 package com.distributed.master;
 
 import com.distributed.commons.LogItem;
-import com.distributed.stubs.LogAppendServiceGrpc;
-import com.distributed.stubs.LogRequest;
-import com.distributed.stubs.LogResponse;
+import com.distributed.stubs.*;
+import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Status;
@@ -20,13 +19,13 @@ public class SecClient {
     private final String host;
     private final ManagedChannel channel;
     private final LogAppendServiceGrpc.LogAppendServiceStub asyncStub;
-    private final LogAppendServiceGrpc.LogAppendServiceBlockingStub blockingStub;
+    private final HealthServiceGrpc.HealthServiceBlockingStub healthService;
 
     public SecClient(final String host, final int port) {
         this.host = host;
         this.channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
         this.asyncStub = LogAppendServiceGrpc.newStub(this.channel);
-        this.blockingStub = LogAppendServiceGrpc.newBlockingStub(this.channel);
+        this.healthService = HealthServiceGrpc.newBlockingStub(this.channel);
     }
 
     private String getHost() {
@@ -63,4 +62,10 @@ public class SecClient {
 
         asyncStub.append(request, responseObserver);
     }
+
+    public void syncPing() {
+        HealthResponse health = this.healthService.health(Empty.getDefaultInstance());
+    }
+
+
 }
