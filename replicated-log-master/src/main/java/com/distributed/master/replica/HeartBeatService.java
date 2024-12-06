@@ -31,14 +31,14 @@ public class HeartBeatService {
     public void start() {
         List<Replica> replicas = replicaRepository.getReplicas();
         for (Replica replica : replicas) {
-            executorService.scheduleWithFixedDelay(replica::ping, 0, 5, TimeUnit.SECONDS);
+            executorService.scheduleWithFixedDelay(replica::ping, 0, 3, TimeUnit.SECONDS);
         }
 
         Runnable logStatuses = () -> {
             List<ReplicaStatus> statuses = replicaRepository.getReplicas().stream().map(Replica::getStatus).collect(Collectors.toList());
             log.info("Replica statuses: {}", statuses);
         };
-        executorService.scheduleWithFixedDelay(logStatuses, 0, 7, TimeUnit.SECONDS);
+        executorService.scheduleWithFixedDelay(logStatuses, 0, 5, TimeUnit.SECONDS);
 
         log.info("Health service started");
     }

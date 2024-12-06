@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class SecClient {
 
@@ -63,8 +64,11 @@ public class SecClient {
         asyncStub.append(request, responseObserver);
     }
 
-    public void syncPing() {
-        HealthResponse health = this.healthService.health(Empty.getDefaultInstance());
+    public long syncPing(int deadlineTimeSeconds) {
+        HealthResponse health = this.healthService
+                .withDeadlineAfter(deadlineTimeSeconds, TimeUnit.SECONDS)
+                .health(Empty.getDefaultInstance());
+        return health.getLastId();
     }
 
 
