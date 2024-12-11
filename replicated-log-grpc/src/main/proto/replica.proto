@@ -5,8 +5,11 @@ option java_package = "com.distributed.stubs";
 option java_multiple_files = true;
 
 message LogRequest {
-  int64 id = 1;
-  string message = 2;
+  message LogEntry {
+    int64 id = 1;
+    string message = 2;
+  }
+  repeated LogEntry logEntries = 1;
 }
 
 // The response message containing the greetings
@@ -22,7 +25,7 @@ message HealthResponse {
 // The LogAppend service definition.
 service LogAppendService {
   // send append log
-  rpc append (LogRequest) returns (LogResponse) {}
+  rpc appendEntries (LogRequest) returns (LogResponse) {}
 }
 
 service HealthService {

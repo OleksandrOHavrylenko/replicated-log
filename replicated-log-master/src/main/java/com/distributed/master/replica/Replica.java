@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,7 +31,7 @@ public class Replica {
     }
 
     public void asyncSendMessage(@NotNull final LogItem item, final CountDownLatch replicationDone) {
-        this.secClient.asyncReplicateLog(item, replicationDone);
+        this.secClient.asyncReplicateLog(List.of(item), replicationDone);
     }
 
     public void ping() {

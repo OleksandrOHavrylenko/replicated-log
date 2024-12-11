@@ -6,6 +6,6 @@ public class IdGenerator {
     private final static AtomicLong counter = new AtomicLong(0L);
 
     public static Long next() {
-        return counter.getAndIncrement();
+        return counter.incrementAndGet();
     }
 }

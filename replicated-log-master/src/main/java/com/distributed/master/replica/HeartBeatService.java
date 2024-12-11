@@ -36,7 +36,7 @@ public class HeartBeatService {
 
         Runnable logStatuses = () -> {
             List<ReplicaStatus> statuses = replicaRepository.getReplicas().stream().map(Replica::getStatus).collect(Collectors.toList());
-            log.info("Replica statuses: {}", statuses);
+            log.info("Replicas statuses: {}", statuses);
         };
         executorService.scheduleWithFixedDelay(logStatuses, 0, 5, TimeUnit.SECONDS);
 
