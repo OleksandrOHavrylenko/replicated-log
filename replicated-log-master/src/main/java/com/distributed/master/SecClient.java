@@ -70,28 +70,25 @@ public class SecClient {
         StreamObserver<LogResponse> responseObserver = new StreamObserver<>() {
             @Override
             public void onNext(LogResponse logResponse) {
-                log.info("Response from {}-{} node: {}",getName(), getHost(), logResponse.getResponseMessage());
+                log.info("Response from {}: {} node: {}",getName(), getHost(), logResponse.getResponseMessage());
             }
 
             @Override
             public void onError(Throwable throwable) {
                 // TODO retry logic should be implemented here in v3
-                log.error("Replication of LogEntry to {}-{} Failed: {}",getName(), getHost(), Status.fromThrowable(throwable));
+                log.error("Replication of LogEntry to {}: {} Failed: {}",getName(), getHost(), Status.fromThrowable(throwable));
                 log.error("Service temporarily unavailable would go for retry if the policy permits");
-//                throw new RuntimeException(String.format("Replication of LogEntry to %s Failed due to status: %s",
-//                        getHost(), Status.fromThrowable(throwable)),
-//                        throwable);
             }
 
             @Override
             public void onCompleted() {
-                log.info("Replication of items to {}-{} Completed", getName(), getHost());
+                log.info("Replication of items to {}: {} Completed", getName(), getHost());
                 writeConcernLatch.countDown();
             }
         };
 
 
-        asyncStub.appendEntries(request, responseObserver);
+        asyncStub.withWaitForReady().appendEntries(request, responseObserver);
     }
 
     public long syncPing(int deadlineTimeSeconds) {
