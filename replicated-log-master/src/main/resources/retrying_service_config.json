@@ -1,0 +1,38 @@
+{
+  "methodConfig": [
+    {
+      "name": [
+        {
+          "service": "com.distributed.stubs.LogAppendService",
+          "method": "appendEntries"
+        }
+      ],
+      "hedgingPolicy": {
+        "maxAttempts": 5,
+        "hedgingDelay": "5s",
+        "nonFatalStatusCodes": [
+          "UNAVAILABLE",
+          "INTERNAL",
+          "ABORTED"
+        ]
+      }
+    },
+    {
+      "name": [
+        {
+          "service": "com.distributed.stubs.LogAppendService",
+          "method": "health"
+        }
+      ],
+      "retryPolicy": {
+        "maxAttempts": 5,
+        "initialBackoff": "0.5s",
+        "maxBackoff": "15s",
+        "backoffMultiplier": 2,
+        "retryableStatusCodes": [
+          "DEADLINE_EXCEEDED","UNAVAILABLE", "UNKNOWN"
+        ]
+      }
+    }
+  ]
+}

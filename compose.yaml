@@ -4,7 +4,7 @@ services:
   secondary1:
     environment:
       - GRPC_PORT=9090
-      - SLEEP_IN_MILLIS=15000
+      - SLEEP_IN_MILLIS=3000
 
     container_name: secondary1
     image: ogavrylenko/replicated-log-secondary:v3
@@ -14,7 +14,8 @@ services:
     ports:
       - 8081:8081
     networks:
-      - backend-net
+      backend-net:
+        ipv4_address: 172.19.0.4
 
   secondary2:
     environment:
@@ -26,15 +27,16 @@ services:
     ports:
       - 8082:8081
     networks:
-      - backend-net
+      backend-net:
+        ipv4_address: 172.19.0.5
     depends_on:
       - secondary1
 
   master:
     environment:
-      - SEC1_HOST=secondary1
+      - SEC1_HOST=172.19.0.4
       - SEC1_PORT=9090
-      - SEC2_HOST=secondary2
+      - SEC2_HOST=172.19.0.5
       - SEC2_PORT=9090
     image: ogavrylenko/replicated-log-master:v3
     container_name: master
@@ -44,7 +46,8 @@ services:
     ports:
       - 8080:8080
     networks:
-      - backend-net
+      backend-net:
+        ipv4_address: 172.19.0.3
     depends_on:
       - secondary1
       - secondary2
@@ -53,3 +56,7 @@ networks:
   backend-net:
     name: backend-net
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1

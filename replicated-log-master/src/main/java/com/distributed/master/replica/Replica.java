@@ -24,10 +24,10 @@ public class Replica {
     private ReplicaStatus status = ReplicaStatus.UNHEALTHY;
     private AtomicInteger pingFail = new AtomicInteger(0);
 
-    public Replica(final String host, final int port) {
+    public Replica(final String host, final int port, final String name) {
         this.host = host;
         this.port = port;
-        this.secClient = new SecClient(host, port);
+        this.secClient = new SecClient(host, port, name);
     }
 
     public void asyncSendMessage(@NotNull final LogItem item, final CountDownLatch replicationDone) {
@@ -40,7 +40,6 @@ public class Replica {
             this.status = statusUp();
         } catch (StatusRuntimeException e) {
             log.warn("Ping failed with status: {}", e.getStatus());
-            log.warn("Error while ping replica={}", this.host, e);
             pingFail.incrementAndGet();
             this.status = statusDown(pingFail);
         } catch (Exception e) {
