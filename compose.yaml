@@ -1,10 +1,10 @@
-version: '2.29.6'
+#version: '3.x'
 
 services:
   secondary1:
     environment:
       - GRPC_PORT=9090
-      - SLEEP_IN_MILLIS=3000
+      - SLEEP_IN_MILLIS=100
 
     container_name: secondary1
     image: ogavrylenko/replicated-log-secondary:v3
@@ -20,7 +20,7 @@ services:
   secondary2:
     environment:
       - GRPC_PORT=9090
-      - SLEEP_IN_MILLIS=3000
+      - SLEEP_IN_MILLIS=150
 
     container_name: secondary2
     image: ogavrylenko/replicated-log-secondary:v3

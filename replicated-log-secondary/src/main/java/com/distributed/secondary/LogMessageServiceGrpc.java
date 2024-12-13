@@ -19,12 +19,15 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
     private static final Logger log = LoggerFactory.getLogger(LogMessageServiceGrpc.class);
 
     private final LogRepository logRepository;
+    private final TempBuffer tempBuffer;
 
     final int sleepInMillis;
 
-    public LogMessageServiceGrpc(final LogRepository logRepository, @Value("${grpc.server.sleepInMillis}") final int sleepInMillis) {
+    public LogMessageServiceGrpc(final LogRepository logRepository, final TempBuffer tempBuffer,
+                                 @Value("${grpc.server.sleepInMillis}") final int sleepInMillis) {
         this.sleepInMillis = sleepInMillis;
         this.logRepository = Objects.requireNonNull(logRepository);
+        this.tempBuffer = Objects.requireNonNull(tempBuffer);
     }
 
     @Override
@@ -34,7 +37,6 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
         List<LogItem> logItems = request.getLogEntriesList().stream().map(logEntry -> new LogItem(logEntry.getId(), logEntry.getMessage())).toList();
 
         for (LogItem logItem : logItems) {
-
             if (IdChecker.getNext() == logItem.getId()) {
                 logRepository.add(logItem);
                 IdChecker.incrementAndGet();
@@ -43,8 +45,15 @@ public class LogMessageServiceGrpc extends LogAppendServiceGrpc.LogAppendService
                 log.warn("Old LogItem {} tries to be saved and is ignored.", logItem);
             } else {
                 log.warn("LogItem {} saved to the buffer and waits for its order.", logItem);
+                tempBuffer.add(logItem);
             }
         }
+
+        while(tempBuffer.contains(IdChecker.getNext())) {
+            logRepository.add(tempBuffer.getAndDelete(IdChecker.incrementAndGet()));
+        }
+
+        tempBuffer.deleteAllLessThen(IdChecker.getNext());
 
         LogResponse response = LogResponse
                 .newBuilder()

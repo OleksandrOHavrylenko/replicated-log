@@ -14,5 +14,7 @@ logging:
     dateformat: "%d{HH:mm:ss.SSS}"
   level:
     com.distributed.master: info
+    io.grpc: info
+    io.netty: info
   include-application-name: false
 

@@ -28,7 +28,7 @@ public class ReplicationService {
         CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern, replicaRepository.getReplicasCount()));
 
         for (Replica replica : replicaRepository.getReplicas()) {
-            executor.submit(() -> replica.asyncSendMessage(item, writeConcernLatch));
+            executor.submit(() -> replica.asyncSendMessage(item, writeConcernLatch, writeConcern == replicaRepository.getReplicasCount()));
         }
 
         log.info("replicateToAll executed");

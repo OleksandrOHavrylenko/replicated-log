@@ -22,4 +22,9 @@ public class LogRepository {
     public List<String> getAll() {
         return List.copyOf(messageRepository.values());
     }
+
+    public List<LogItem> getAllBiggerThen(long startId) {
+        List<LogItem> result = messageRepository.entrySet().stream().filter(e -> e.getKey() > startId).map(e -> new LogItem(e.getKey(), e.getValue())).toList();
+        return result;
+    }
 }

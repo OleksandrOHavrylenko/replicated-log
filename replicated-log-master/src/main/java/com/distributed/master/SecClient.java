@@ -5,9 +5,7 @@ import com.distributed.stubs.*;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.protobuf.Empty;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Status;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,7 @@ public class SecClient {
 
     private final String host;
     private final String name;
-    private final ManagedChannel channel;
+    private final ManagedChannel originalChannel;
     private final LogAppendServiceGrpc.LogAppendServiceStub asyncStub;
     private final HealthServiceGrpc.HealthServiceBlockingStub healthService;
 
@@ -35,11 +33,12 @@ public class SecClient {
         this.name = name;
         final Map<String, ?> serviceConfig = getRetryingServiceConfig();
         log.info("Client started with retrying configuration: " + serviceConfig);
-        this.channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext()
-//                .disableServiceConfigLookUp().defaultServiceConfig(serviceConfig).enableRetry()
+        this.originalChannel = ManagedChannelBuilder.forAddress(host, port).usePlaintext()
+                .disableServiceConfigLookUp().defaultServiceConfig(serviceConfig).enableRetry()
                 .build();
-        this.asyncStub = LogAppendServiceGrpc.newStub(this.channel);
-        this.healthService = HealthServiceGrpc.newBlockingStub(this.channel);
+        Channel channel = ClientInterceptors.intercept(this.originalChannel, new RetryLoggingInterceptor());
+        this.asyncStub = LogAppendServiceGrpc.newStub(channel);
+        this.healthService = HealthServiceGrpc.newBlockingStub(channel);
     }
 
     private static Map<String, ?> getRetryingServiceConfig() {
@@ -59,7 +58,7 @@ public class SecClient {
         return name;
     }
 
-    public void asyncReplicateLog(final List<LogItem> logItems, final CountDownLatch writeConcernLatch) {
+    public void asyncReplicateLog(final List<LogItem> logItems, final CountDownLatch writeConcernLatch, boolean waitForReady) {
 
         List<LogRequest.LogEntry> logEntries = logItems.stream().map(item -> LogRequest.LogEntry.newBuilder().setId(item.getId()).setMessage(item.getMessage()).build()).toList();
 
@@ -75,7 +74,6 @@ public class SecClient {
 
             @Override
             public void onError(Throwable throwable) {
-                // TODO retry logic should be implemented here in v3
                 log.error("Replication of LogEntry to {}: {} Failed: {}",getName(), getHost(), Status.fromThrowable(throwable));
                 log.error("Service temporarily unavailable would go for retry if the policy permits");
             }
@@ -83,12 +81,19 @@ public class SecClient {
             @Override
             public void onCompleted() {
                 log.info("Replication of items to {}: {} Completed", getName(), getHost());
-                writeConcernLatch.countDown();
+                if(writeConcernLatch != null) {
+                    writeConcernLatch.countDown();
+                }
             }
         };
 
+        if (waitForReady) {
+            asyncStub.withWaitForReady().appendEntries(request, responseObserver);
+        } else {
+            asyncStub.appendEntries(request, responseObserver);
+        }
 
-        asyncStub.withWaitForReady().appendEntries(request, responseObserver);
+
     }
 
     public long syncPing(int deadlineTimeSeconds) {
