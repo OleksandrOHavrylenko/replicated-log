@@ -1,6 +1,7 @@
 package com.distributed.master;
 
 import com.distributed.commons.LogItem;
+import com.distributed.master.heartbeat.ReplicaStatus;
 import com.distributed.stubs.*;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
@@ -58,9 +59,15 @@ public class SecClient {
         return name;
     }
 
-    public void asyncReplicateLog(final List<LogItem> logItems, final CountDownLatch writeConcernLatch, boolean waitForReady) {
+    public void asyncReplicateLog(final List<LogItem> logItems, final CountDownLatch writeConcernLatch,
+                                  final boolean waitForReady, final ReplicaStatus replicaStatus) {
 
-        List<LogRequest.LogEntry> logEntries = logItems.stream().map(item -> LogRequest.LogEntry.newBuilder().setId(item.getId()).setMessage(item.getMessage()).build()).toList();
+        List<LogRequest.LogEntry> logEntries = logItems.stream()
+                .map(item -> LogRequest.LogEntry.newBuilder()
+                        .setId(item.getId())
+                        .setMessage(item.getMessage())
+                        .build())
+                .toList();
 
         LogRequest.Builder builder = LogRequest.newBuilder();
         logEntries.forEach(builder::addLogEntries);
@@ -76,6 +83,9 @@ public class SecClient {
             public void onError(Throwable throwable) {
                 log.error("Replication of LogEntry to {}: {} Failed: {}",getName(), getHost(), Status.fromThrowable(throwable));
                 log.error("Service temporarily unavailable would go for retry if the policy permits");
+                if(writeConcernLatch != null) {
+                    writeConcernLatch.countDown();
+                }
             }
 
             @Override
@@ -90,10 +100,10 @@ public class SecClient {
         if (waitForReady) {
             asyncStub.withWaitForReady().appendEntries(request, responseObserver);
         } else {
-            asyncStub.appendEntries(request, responseObserver);
+            if (replicaStatus != ReplicaStatus.UNHEALTHY) {
+                asyncStub.appendEntries(request, responseObserver);
+            }
         }
-
-
     }
 
     public long syncPing(int deadlineTimeSeconds) {

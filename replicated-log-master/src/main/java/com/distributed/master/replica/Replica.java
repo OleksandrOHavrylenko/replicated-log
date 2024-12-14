@@ -36,14 +36,14 @@ public class Replica {
     }
 
     public void asyncSendMessage(@NotNull final LogItem item, final CountDownLatch replicationDone, boolean waitForReady) {
-        this.secClient.asyncReplicateLog(List.of(item), replicationDone, waitForReady);
+        this.secClient.asyncReplicateLog(List.of(item), replicationDone, waitForReady, this.status);
     }
 
     public void restore(@NotNull final List<LogItem> items) {
-        this.secClient.asyncReplicateLog(items, null, false);
+        this.secClient.asyncReplicateLog(items, null, false, this.status);
     }
 
-    private void restore(long lastId) {
+    private void checkForRestore(long lastId) {
         if (lastId < IdGenerator.getLast()) {
             restoreService.restore(lastId, this);
         }
@@ -53,7 +53,7 @@ public class Replica {
         try {
             long lastId = this.secClient.syncPing(getPingTimeout());
             this.status = statusUp();
-            restore(lastId);
+            checkForRestore(lastId);
         } catch (StatusRuntimeException e) {
             log.warn("Ping failed with status: {}", e.getStatus());
             pingFail.incrementAndGet();

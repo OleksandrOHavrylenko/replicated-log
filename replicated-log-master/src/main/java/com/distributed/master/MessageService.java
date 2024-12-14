@@ -25,12 +25,8 @@ public class MessageService {
     }
 
     public String append(Message message) {
-        LogItem item = new LogItem(IdGenerator.next(), message.getMessage());
 
-        logRepository.add(item);
-
-//        writeConcern should be decremented by 1 because 1 write was already done on master node
-        String responseMessage = replicationService.replicateToAll(item, message.getWriteConcern() - 1);
+        String responseMessage = replicationService.replicateToAll(message.getMessage(), message.getWriteConcern());
         return responseMessage;
     }
 

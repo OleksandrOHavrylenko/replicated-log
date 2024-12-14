@@ -1,6 +1,7 @@
 package com.distributed.master.replica;
 
 import com.distributed.master.RestoreService;
+import com.distributed.master.heartbeat.ReplicaStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,5 +24,9 @@ public class ReplicaRepository {
 
     public int getReplicasCount() {
         return this.replicas.size();
+    }
+
+    public long getAliveReplicasCount() {
+        return getReplicas().stream().filter(replica -> replica.getStatus() != ReplicaStatus.UNHEALTHY).count();
     }
 }

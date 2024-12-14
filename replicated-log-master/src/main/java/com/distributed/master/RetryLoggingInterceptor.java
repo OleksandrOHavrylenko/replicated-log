@@ -25,7 +25,6 @@ public class RetryLoggingInterceptor implements ClientInterceptor {
                         if (retries != null) {
                             log.info("Retries to copy:" + retries);
                         }
-                        log.info("Headers: {}", headers);
                         super.onHeaders(headers);
                     }
                 }, headers);
