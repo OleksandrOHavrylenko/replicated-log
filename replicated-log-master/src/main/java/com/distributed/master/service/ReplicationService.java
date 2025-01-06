@@ -20,14 +20,14 @@ public class ReplicationService {
     private static final Logger log = LoggerFactory.getLogger(ReplicationService.class);
     public static final int MASTER_NODE = 1;
 
-    private final ReplicaService replicaService;
+    private final ReplicasService replicasService;
     private final LogRepository logRepository;
     private final ExecutorService executor;
 
-    public ReplicationService(final ReplicaService replicaService, final LogRepository logRepository) {
-        this.replicaService = Objects.requireNonNull(replicaService);
+    public ReplicationService(final ReplicasService replicasService, final LogRepository logRepository) {
+        this.replicasService = Objects.requireNonNull(replicasService);
         this.logRepository = Objects.requireNonNull(logRepository);
-        this.executor = Executors.newFixedThreadPool(replicaService.getReplicasCount());
+        this.executor = Executors.newFixedThreadPool(replicasService.getReplicasCount());
     }
 
     public String replicateToAll(final String message, final int writeConcern) {
@@ -36,10 +36,10 @@ public class ReplicationService {
         LogItem item = new LogItem(IdGenerator.next(), message);
         logRepository.add(item);
 
-        CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern - MASTER_NODE, replicaService.getReplicasCount()));
+        CountDownLatch writeConcernLatch = new CountDownLatch(Math.min(writeConcern - MASTER_NODE, replicasService.getReplicasCount()));
 
-        for (Replica replica : replicaService.getReplicas()) {
-            executor.submit(() -> replica.asyncSendMessage(item, writeConcernLatch, (writeConcern - MASTER_NODE) == replicaService.getReplicasCount()));
+        for (Replica replica : replicasService.getReplicas()) {
+            executor.submit(() -> replica.asyncSendMessage(item, writeConcernLatch, (writeConcern - MASTER_NODE) == replicasService.getReplicasCount()));
         }
 
         log.info("replicateToAll executed");
@@ -54,8 +54,8 @@ public class ReplicationService {
     }
 
     private void checkQuorum() {
-        long availableNodes = replicaService.getAliveReplicasCount() + MASTER_NODE;
-        long totalNodes = replicaService.getReplicasCount() + MASTER_NODE;
+        long availableNodes = replicasService.getAliveReplicasCount() + MASTER_NODE;
+        long totalNodes = replicasService.getReplicasCount() + MASTER_NODE;
         if (availableNodes < (totalNodes + 1) / 2) {
             throw new NoQuorumException(availableNodes, totalNodes);
         }

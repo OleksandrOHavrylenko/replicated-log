@@ -20,23 +20,23 @@ import java.util.stream.Collectors;
 public class HeartBeatService {
     private static final Logger log = LoggerFactory.getLogger(HeartBeatService.class);
 
-    private final ReplicaService replicaService;
+    private final ReplicasService replicasService;
     private final ScheduledExecutorService executorService;
 
-    public HeartBeatService(final ReplicaService replicaService) {
-        this.replicaService = Objects.requireNonNull(replicaService);
-        this.executorService = Executors.newScheduledThreadPool(replicaService.getReplicasCount() + 1);
+    public HeartBeatService(final ReplicasService replicasService) {
+        this.replicasService = Objects.requireNonNull(replicasService);
+        this.executorService = Executors.newScheduledThreadPool(replicasService.getReplicasCount() + 1);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void start() {
-        List<Replica> replicas = replicaService.getReplicas();
+        List<Replica> replicas = replicasService.getReplicas();
         for (Replica replica : replicas) {
             executorService.scheduleWithFixedDelay(replica::ping, 0, 3, TimeUnit.SECONDS);
         }
 
         Runnable logStatuses = () -> {
-            List<ReplicaStatus> statuses = replicaService.getReplicas().stream().map(Replica::getStatus).collect(Collectors.toList());
+            List<ReplicaStatus> statuses = replicasService.getReplicas().stream().map(Replica::getStatus).collect(Collectors.toList());
             log.info("Replicas statuses: {}", statuses);
         };
         executorService.scheduleWithFixedDelay(logStatuses, 0, 3, TimeUnit.SECONDS);
