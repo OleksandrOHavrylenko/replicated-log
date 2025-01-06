@@ -1,4 +1,4 @@
-package com.distributed.commons;
+package com.distributed.commons.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;

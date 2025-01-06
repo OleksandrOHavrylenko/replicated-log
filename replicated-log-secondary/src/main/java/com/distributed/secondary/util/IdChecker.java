@@ -1,4 +1,4 @@
-package com.distributed.secondary;
+package com.distributed.secondary.util;
 
 import java.util.concurrent.atomic.AtomicLong;
 

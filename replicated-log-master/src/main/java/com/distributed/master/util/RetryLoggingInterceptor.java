@@ -1,4 +1,4 @@
-package com.distributed.master;
+package com.distributed.master.util;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.*;

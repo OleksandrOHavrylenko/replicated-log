@@ -1,6 +1,7 @@
-package com.distributed.master;
+package com.distributed.master.web;
 
-import com.distributed.commons.Message;
+import com.distributed.commons.model.Message;
+import com.distributed.master.service.MessageService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

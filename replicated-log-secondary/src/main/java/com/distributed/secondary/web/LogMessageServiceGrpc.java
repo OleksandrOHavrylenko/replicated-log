@@ -1,6 +1,9 @@
-package com.distributed.secondary;
+package com.distributed.secondary.web;
 
-import com.distributed.commons.LogItem;
+import com.distributed.commons.model.LogItem;
+import com.distributed.secondary.util.IdChecker;
+import com.distributed.secondary.repository.LogRepository;
+import com.distributed.secondary.repository.TempBuffer;
 import com.distributed.stubs.LogAppendServiceGrpc;
 import com.distributed.stubs.LogRequest;
 import com.distributed.stubs.LogResponse;

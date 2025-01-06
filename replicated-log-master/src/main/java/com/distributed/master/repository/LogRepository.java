@@ -1,6 +1,6 @@
-package com.distributed.master;
+package com.distributed.master.repository;
 
-import com.distributed.commons.LogItem;
+import com.distributed.commons.model.LogItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;

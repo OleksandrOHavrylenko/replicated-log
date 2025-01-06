@@ -1,5 +1,6 @@
-package com.distributed.secondary;
+package com.distributed.secondary.service;
 
+import com.distributed.secondary.util.IdChecker;
 import com.distributed.stubs.HealthResponse;
 import com.distributed.stubs.HealthServiceGrpc;
 import com.google.protobuf.Empty;

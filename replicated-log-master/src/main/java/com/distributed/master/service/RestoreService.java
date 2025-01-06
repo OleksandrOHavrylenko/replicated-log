@@ -1,6 +1,7 @@
-package com.distributed.master;
+package com.distributed.master.service;
 
-import com.distributed.commons.LogItem;
+import com.distributed.commons.model.LogItem;
+import com.distributed.master.repository.LogRepository;
 import com.distributed.master.replica.Replica;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

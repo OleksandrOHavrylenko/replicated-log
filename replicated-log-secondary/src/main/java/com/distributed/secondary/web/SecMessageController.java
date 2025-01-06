@@ -1,5 +1,6 @@
-package com.distributed.secondary;
+package com.distributed.secondary.web;
 
+import com.distributed.secondary.repository.LogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;

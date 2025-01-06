@@ -1,5 +1,6 @@
-package com.distributed.secondary;
+package com.distributed.secondary.web;
 
+import com.distributed.secondary.service.HealthService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import jakarta.annotation.PreDestroy;

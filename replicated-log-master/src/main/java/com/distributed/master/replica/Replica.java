@@ -1,11 +1,11 @@
 package com.distributed.master.replica;
 
-import com.distributed.commons.LogItem;
-import com.distributed.master.IdGenerator;
-import com.distributed.master.RestoreService;
-import com.distributed.master.SecClient;
+import com.distributed.commons.model.LogItem;
+import com.distributed.master.service.RestoreService;
+import com.distributed.master.service.SecClient;
 import com.distributed.master.heartbeat.ReplicaStatus;
 import com.distributed.master.heartbeat.StatusHandler;
+import com.distributed.master.util.IdGenerator;
 import io.grpc.StatusRuntimeException;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

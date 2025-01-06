@@ -1,6 +1,7 @@
-package com.distributed.master;
+package com.distributed.master.service;
 
-import com.distributed.commons.LogItem;
+import com.distributed.commons.model.LogItem;
+import com.distributed.master.util.RetryLoggingInterceptor;
 import com.distributed.master.heartbeat.ReplicaStatus;
 import com.distributed.stubs.*;
 import com.google.gson.Gson;
